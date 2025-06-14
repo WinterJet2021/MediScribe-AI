@@ -1,4 +1,4 @@
-import { sql } from "../config/db.js";
+import { sql } from "../config/postgresql.db.js";
 
 //this is for getting transactions by the endpoint "/api/transactions/:userId"
 export async function getTransactionsByUserId(req, res) {

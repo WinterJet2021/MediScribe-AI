@@ -1,16 +1,25 @@
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
-import { initDB } from './config/db.js';
+import { initDB } from './config/postgresql.db.js';
 import rateLimiter from './middleware/rateLimiter.js';
 import transactionsRoute from './routes/transactionsRoute.js';
 import job from "./config/cron.js";
+import connectDB from './config/mongodb.db.js';
+import healthRoutes from './routes/healthRoutes.js';
+import notesRoutes from './routes/notesRoutes.js';
+import audioRoutes from './routes/audioRoutes.js';
 
 if(process.env.NODE_ENV === "production")job.start()
+
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5001;
+
+//Connect to Database
+await connectDB();
 
 app.get("/apihealth" , (req, res) => {
   res.status(200).json("OK");
@@ -19,6 +28,7 @@ app.get("/apihealth" , (req, res) => {
 // Middleware
 app.use(rateLimiter);
 app.use(express.json());
+app.use(cors());
 
 // Debug middleware
 app.use((req, res, next) => {
@@ -31,12 +41,11 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/health", (req, res) => {
-  res.send("OK");
-});
-
 // Main API routes
 app.use("/api/transactions", transactionsRoute);
+app.use('/api/health', healthRoutes);
+app.use('/notes', notesRoutes);
+app.use('/upload-audio', audioRoutes);
 
 // Start server after DB is ready
 initDB()
