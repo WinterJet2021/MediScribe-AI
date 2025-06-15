@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:3001/mediscribe'), {
+    await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:5001/mediscribe'), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     };

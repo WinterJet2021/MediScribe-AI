@@ -1,29 +1,33 @@
-import { v4 as uuidv4 } from 'uuid';
+// controllers/audioController.js
 
-const audioMetadata = []; // Temp in-memory store, replace with PostgreSQL later
+import AudioRecord from "../models/mongo/audioRecordModel.js";
 
 export const uploadAudioMetadata = async (req, res) => {
   try {
-    const { user_id, file_url, duration } = req.body;
+    const { file_url, duration, patientId } = req.body;
+    const userId = req.auth.userId;
 
-    const newAudio = {
-      id: uuidv4(),
-      user_id,
-      file_url,
+    const newAudio = await AudioRecord.create({
+      userId,
+      fileUrl: file_url,
       duration,
-      status: "pending",
-      uploaded_at: new Date()
-    };
+      patientId
+    });
 
-    audioMetadata.push(newAudio); // Save temporarily
     res.status(201).json(newAudio);
   } catch (err) {
+    console.error("❌ Audio upload failed:", err);
     res.status(500).json({ error: "Failed to upload audio metadata." });
   }
 };
 
 export const getAudioById = async (req, res) => {
-  const audio = audioMetadata.find(a => a.id === req.params.id);
-  if (!audio) return res.status(404).json({ error: "Audio not found" });
-  res.json(audio);
+  try {
+    const audio = await AudioRecord.findById(req.params.id);
+    if (!audio) return res.status(404).json({ error: "Audio not found" });
+
+    res.json(audio);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch audio metadata" });
+  }
 };

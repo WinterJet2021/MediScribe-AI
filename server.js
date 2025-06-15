@@ -1,3 +1,5 @@
+//server.js
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -9,6 +11,7 @@ import connectDB from './config/mongodb.db.js';
 import healthRoutes from './routes/healthRoutes.js';
 import notesRoutes from './routes/notesRoutes.js';
 import audioRoutes from './routes/audioRoutes.js';
+import transcriptionRoutes from './routes/transcriptionRoutes.js';
 
 if(process.env.NODE_ENV === "production")job.start()
 
@@ -43,9 +46,10 @@ app.get("/", (req, res) => {
 
 // Main API routes
 app.use("/api/transactions", transactionsRoute);
-app.use('/api/health', healthRoutes);
-app.use('/notes', notesRoutes);
-app.use('/upload-audio', audioRoutes);
+app.use("/api/health", healthRoutes);
+app.use("/api/notes", notesRoutes);
+app.use("/api/audio", audioRoutes);
+app.use("/api/transcriptions", transcriptionRoutes);
 
 // Start server after DB is ready
 initDB()

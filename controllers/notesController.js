@@ -1,3 +1,5 @@
+// controllers/notesController.js
+
 import MedicalNote from '../models/mongo/medicalNoteModel.js';
 
 export const createMedicalNote = async (req, res) => {
