@@ -50,6 +50,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/audio", audioRoutes);
 app.use("/api/transcriptions", transcriptionRoutes);
+app.use("/api/ehr/", transcriptionRoutes);
 
 // Start server after DB is ready
 initDB()
