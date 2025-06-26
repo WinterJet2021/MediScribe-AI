@@ -1,6 +1,6 @@
 // controllers/notesController.js
 
-import MedicalNote from '../models/mongo/medicalNoteModel.js';
+import MedicalNote from '../models/mongo/crc1NoteModel.js';
 
 export const createMedicalNote = async (req, res) => {
   try {
