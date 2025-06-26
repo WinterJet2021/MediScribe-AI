@@ -1,4 +1,4 @@
-//server.js
+// server.js
 
 import express from 'express';
 import cors from 'cors';
@@ -12,21 +12,22 @@ import healthRoutes from './routes/healthRoutes.js';
 import notesRoutes from './routes/notesRoutes.js';
 import audioRoutes from './routes/audioRoutes.js';
 import transcriptionRoutes from './routes/transcriptionRoutes.js';
+import ehrRoutes from './routes/ehrRoutes.js';
 
-if(process.env.NODE_ENV === "production")job.start()
-
+if (process.env.NODE_ENV === "production") job.start();
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5001;
 
-//Connect to Database
+// Connect to MongoDB
 await connectDB();
 
-app.get("/apihealth" , (req, res) => {
+// Health check route
+app.get("/apihealth", (req, res) => {
   res.status(200).json("OK");
-})
+});
 
 // Middleware
 app.use(rateLimiter);
@@ -35,11 +36,11 @@ app.use(cors());
 
 // Debug middleware
 app.use((req, res, next) => {
-  console.log("Incoming request method:", req.method, req.path);
+  console.log("Incoming request:", req.method, req.path);
   next();
 });
 
-// Root routes
+// Root route
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
@@ -50,14 +51,14 @@ app.use("/api/health", healthRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/audio", audioRoutes);
 app.use("/api/transcriptions", transcriptionRoutes);
-app.use("/api/ehr/", transcriptionRoutes);
+app.use("/api/ehr", ehrRoutes);
 
 // Start server after DB is ready
 initDB()
   .then(() => {
-    console.log("Database setup complete.");
+    console.log("PostgreSQL database setup complete.");
     app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
+      console.log(`Server is running at http://localhost:${port}`);
     });
   })
   .catch((error) => {
