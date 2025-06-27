@@ -23,6 +23,8 @@
     "mongodb": "^6.17.0",
     "mongoose": "^8.15.2",
     "multer": "^2.0.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
