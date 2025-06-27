@@ -1,4 +1,4 @@
-// server.js
+// File: server.js
 
 import express from 'express';
 import cors from 'cors';
@@ -13,6 +13,8 @@ import notesRoutes from './routes/notesRoutes.js';
 import audioRoutes from './routes/audioRoutes.js';
 import transcriptionRoutes from './routes/transcriptionRoutes.js';
 import ehrRoutes from './routes/ehrRoutes.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
 if (process.env.NODE_ENV === "production") job.start();
 
@@ -53,16 +55,19 @@ app.use("/api/audio", audioRoutes);
 app.use("/api/transcriptions", transcriptionRoutes);
 app.use("/api/ehr", ehrRoutes);
 
+// Swagger documentation route
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Start server after DB is ready
 initDB()
   .then(() => {
     console.log("PostgreSQL database setup complete.");
     app.listen(port, () => {
-      console.log(`Server is running at http://localhost:${port}`);
+      console.log(`✅ Server is running on port ${port}`);
     });
   })
   .catch((error) => {
-    console.error("Error during database setup:", error);
+    console.error("❌ Error during database setup:", error);
   });
 
 export default app;
