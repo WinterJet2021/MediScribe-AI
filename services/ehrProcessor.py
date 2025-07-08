@@ -7,6 +7,7 @@ import json
 import ollama
 
 def extract_text(doc_path):
+    
     doc = docx.Document(doc_path)
     return "\n".join(p.text.strip() for p in doc.paragraphs if p.text.strip())
 

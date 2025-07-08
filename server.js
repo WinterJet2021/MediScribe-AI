@@ -15,50 +15,41 @@ import transcriptionRoutes from './routes/transcriptionRoutes.js';
 import ehrRoutes from './routes/ehrRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
+import { startOllamaIfNotRunning } from './middleware/startOllama.js';
+
+dotenv.config();
 
 if (process.env.NODE_ENV === "production") job.start();
 
-dotenv.config();
+// Start Ollama server if not running
+startOllamaIfNotRunning();
 
 const app = express();
 const port = process.env.PORT || 5001;
 
-// Connect to MongoDB
+// Mongo
 await connectDB();
-
-// Health check route
-app.get("/apihealth", (req, res) => {
-  res.status(200).json("OK");
-});
 
 // Middleware
 app.use(rateLimiter);
 app.use(express.json());
 app.use(cors());
 
-// Debug middleware
 app.use((req, res, next) => {
   console.log("Incoming request:", req.method, req.path);
   next();
 });
 
-// Root route
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
-// Main API routes
+// Routes
+app.get("/", (req, res) => res.send("Hello World!"));
 app.use("/api/transactions", transactionsRoute);
 app.use("/api/health", healthRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/audio", audioRoutes);
 app.use("/api/transcriptions", transcriptionRoutes);
 app.use("/api/ehr", ehrRoutes);
-
-// Swagger documentation route
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Start server after DB is ready
 initDB()
   .then(() => {
     console.log("PostgreSQL database setup complete.");
